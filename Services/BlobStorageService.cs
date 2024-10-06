@@ -13,13 +13,12 @@ namespace SqlScriptRunner.Services
     public class BlobStorageService : IBlobStorageService
     {
         private readonly BlobServiceClient _blobServiceClient;
-        private readonly string _connectionString;
         private readonly ILogger _logger;
 
         public BlobStorageService(ILogger<BlobStorageService> logger)
         {
-            _connectionString = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
-            _blobServiceClient = new BlobServiceClient(_connectionString);
+            var connectionString = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
+            _blobServiceClient = new BlobServiceClient(connectionString);
             _logger = logger;
         }
 
@@ -31,16 +30,14 @@ namespace SqlScriptRunner.Services
 
             await foreach (BlobItem blobItem in containerClient.GetBlobsAsync(cancellationToken: cancellationToken))
             {
-                if (blobItem.Name.EndsWith(".sql", StringComparison.OrdinalIgnoreCase))
-                {
-                    BlobClient blobClient = containerClient.GetBlobClient(blobItem.Name);
-                    BlobDownloadInfo download = await blobClient.DownloadAsync(cancellationToken);
+                if (!blobItem.Name.EndsWith(".sql", StringComparison.OrdinalIgnoreCase)) continue;
+                BlobClient blobClient = containerClient.GetBlobClient(blobItem.Name);
+                BlobDownloadInfo download = await blobClient.DownloadAsync(cancellationToken);
 
-                    using (var reader = new StreamReader(download.Content, Encoding.UTF8))
-                    {
-                        string scriptContent = await reader.ReadToEndAsync();
-                        sqlScripts.Add(blobItem.Name, scriptContent);
-                    }
+                using (var reader = new StreamReader(download.Content, Encoding.UTF8))
+                {
+                    string scriptContent = await reader.ReadToEndAsync();
+                    sqlScripts.Add(blobItem.Name, scriptContent);
                 }
             }
             _logger.LogInformation("Reading all sql scripts has been completed!");
@@ -56,7 +53,7 @@ namespace SqlScriptRunner.Services
 
             using (var memoryStream = new MemoryStream())
             {
-                using (var writer = new StreamWriter(memoryStream, Encoding.UTF8, leaveOpen: true))
+                await using (var writer = new StreamWriter(memoryStream, Encoding.UTF8, leaveOpen: true))
                 {
                     foreach (var row in results)
                     {

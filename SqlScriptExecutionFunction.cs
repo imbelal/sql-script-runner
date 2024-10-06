@@ -22,7 +22,7 @@ namespace SqlScriptRunner
 
         [FunctionName("execute-scripts")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.User, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("Function started.");

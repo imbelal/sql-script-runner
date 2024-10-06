@@ -21,12 +21,12 @@ namespace SqlScriptRunner
             string connectionString = Environment.GetEnvironmentVariable("SqlConnectionString");
             var results = new List<string[]>();
 
-            using (var connection = new SqlConnection(connectionString))
+            await using (var connection = new SqlConnection(connectionString))
             {
                 await connection.OpenAsync(cancellationToken);
-                using (var command = new SqlCommand(sqlQuery, connection))
+                await using (var command = new SqlCommand(sqlQuery, connection))
                 {
-                    using (var reader = await command.ExecuteReaderAsync(cancellationToken))
+                    await using (var reader = await command.ExecuteReaderAsync(cancellationToken))
                     {
                         var columnNames = new List<string>();
                         for (int i = 0; i < reader.FieldCount; i++)

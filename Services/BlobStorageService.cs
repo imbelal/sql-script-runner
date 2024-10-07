@@ -43,6 +43,24 @@ namespace SqlScriptRunner.Services
             _logger.LogInformation("Reading all sql scripts has been completed!");
             return sqlScripts;
         }
+        
+        public async Task<string> ReadSqlScriptAsync(string containerName, string blobName, CancellationToken cancellationToken = default)
+        {
+            _logger.LogInformation($"Reading {blobName}...");
+            var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
+            
+            // Get the blob client for the specific blob (SQL script)
+            BlobClient blobClient = containerClient.GetBlobClient(blobName);
+            BlobDownloadInfo download = await blobClient.DownloadAsync(cancellationToken);
+            
+            string scriptContent;
+            using (var reader = new StreamReader(download.Content, Encoding.UTF8))
+            {
+                scriptContent = await reader.ReadToEndAsync();
+            }
+            _logger.LogInformation($"Reading {blobName} has been completed!");
+            return scriptContent;
+        }
 
         public async Task UploadResultsToBlobAsync(List<string[]> results, string blobName, CancellationToken cancellationToken = default)
         {

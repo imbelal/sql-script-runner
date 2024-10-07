@@ -11,7 +11,7 @@ namespace SqlScriptRunner
         {
             // Register services
             builder.Services.AddSingleton<IBlobStorageService, BlobStorageService>();
-            builder.Services.AddSingleton<ISqlQueryExecutor, SqlQueryExecutor>();
+            builder.Services.AddSingleton<ISqlQueryExecutorService, SqlQueryExecutorService>();
         }
     }
 }

@@ -5,12 +5,12 @@ using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SqlScriptRunner
+namespace SqlScriptRunner.Services
 {
-    public class SqlQueryExecutor : ISqlQueryExecutor
+    public class SqlQueryExecutorService : ISqlQueryExecutorService
     {
         private readonly ILogger _logger;
-        public SqlQueryExecutor(ILogger<SqlQueryExecutor> logger)
+        public SqlQueryExecutorService(ILogger<SqlQueryExecutorService> logger)
         {
             _logger = logger;
         }

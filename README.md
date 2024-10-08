@@ -74,22 +74,6 @@ The function can be triggered via an HTTP GET or POST request. The endpoint will
 ```bash
 curl -X POST https://<your-function-app-name>.azurewebsites.net/api/execute-scripts
 ```
-```graphql
-SqlScriptRunner/
-│
-├── Services/
-│   ├── IBlobStorageService.cs           # Interface for blob storage operations
-│   ├── ISqlQueryExecutor.cs             # Interface for executing SQL queries
-│   └── Implementations/
-│       ├── BlobStorageService.cs        # Implements blob storage operations
-│       └── SqlQueryExecutor.cs          # Implements SQL execution logic
-│
-├── SqlScriptExecutionFunction.cs        # Azure function class
-├── local.settings.json                  # Local development settings
-├── host.json                            # Function configuration file
-├── SqlScriptRunner.csproj               # Project file
-└── README.md                            # Documentation
-```
 
 ### Contributing
 Feel free to submit issues or pull requests if you would like to contribute. Please ensure that any code changes are well-tested and documented.

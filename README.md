@@ -12,7 +12,8 @@
 - **HTTP Trigger**: Can be triggered via HTTP `GET` or `POST` requests.
 
 ## Simple UI
-![image](https://github.com/user-attachments/assets/7b8c1c02-4252-472a-a201-7ffe80101124)
+![image](https://github.com/user-attachments/assets/97f48183-c939-40d6-99d5-6e417b6de884)
+
 
 
 ## Requirements

@@ -68,7 +68,8 @@ public static class HtmlPageGeneratorService
             // Add a row with a link to execute the script
             htmlBuilder.Append("<tr>");
             htmlBuilder.Append($"<td>{scriptName}</td>");
-            htmlBuilder.Append($"<td><a href=\"/api/execute-script/{encodedScriptName}\">Execute</a></td>");
+            htmlBuilder.Append($"<td><a href=\"/api/execute-script/{encodedScriptName}\">Execute</a> || ");
+            htmlBuilder.Append($"<a href=\"/api/download/{encodedScriptName}\">Download</a></td>");
             htmlBuilder.Append("</tr>");
         }
 

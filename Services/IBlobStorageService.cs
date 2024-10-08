@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs.Models;
 
 namespace SqlScriptRunner.Services
 {
@@ -21,7 +22,16 @@ namespace SqlScriptRunner.Services
         /// <param name="blobName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string> ReadSqlScriptAsync(string containerName, string blobName,
+        Task<string> ReadSingleSqlScriptAsync(string containerName, string blobName,
+            CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Download single blob.
+        /// </summary>
+        /// <param name="blobName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<BlobDownloadInfo> DownloadSingleBlobAsync(string blobName,
             CancellationToken cancellationToken = default);
         
         /// <summary>
@@ -31,6 +41,6 @@ namespace SqlScriptRunner.Services
         /// <param name="blobName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task UploadResultsToBlobAsync(List<string[]> results, string blobName, CancellationToken cancellationToken = default);
+        Task UploadScriptsResultsToBlobAsync(List<string[]> results, string blobName, CancellationToken cancellationToken = default);
     }
 }

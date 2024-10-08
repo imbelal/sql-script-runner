@@ -6,8 +6,11 @@ using Microsoft.Extensions.Logging;
 using SqlScriptRunner.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs.Models;
 
 namespace SqlScriptRunner
 {
@@ -39,7 +42,7 @@ namespace SqlScriptRunner
                 foreach (var script in sqlScripts)
                 {
                     var results = await _sqlQueryExecutorService.ExecuteSqlQueryAsync(script.Value, script.Key);
-                    await _blobStorageService.UploadResultsToBlobAsync(results, script.Key.Replace(".sql", ".csv"));
+                    await _blobStorageService.UploadScriptsResultsToBlobAsync(results, script.Key.Replace(".sql", ".csv"));
                 }
 
                 responseMessage = "All scripts executed and results uploaded successfully.";
@@ -65,11 +68,11 @@ namespace SqlScriptRunner
             try
             {
                 // Read all SQL scripts from Blob Storage
-                var sqlScript = await _blobStorageService.ReadSqlScriptAsync("scripts", filename);
+                var sqlScript = await _blobStorageService.ReadSingleSqlScriptAsync("scripts", filename);
 
                 // Execute SQL script and upload results
                 var results = await _sqlQueryExecutorService.ExecuteSqlQueryAsync(sqlScript, filename);
-                await _blobStorageService.UploadResultsToBlobAsync(results, filename.Replace(".sql", ".csv"));
+                await _blobStorageService.UploadScriptsResultsToBlobAsync(results, filename.Replace(".sql", ".csv"));
 
                 responseMessage = "Script has been executed and results uploaded successfully.";
             }
@@ -110,5 +113,41 @@ namespace SqlScriptRunner
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
+        
+        [FunctionName("DownloadBlobFile")]
+        public async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "download/{fileName}")] HttpRequest req,
+            string fileName,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            // File extension changed because we want to download the script result which is saved in csv format.
+            fileName = fileName.Replace(".sql", ".csv");
+            log.LogInformation($"Download request for blob: {fileName}");
+
+            try
+            {
+                // Download the blob content to a temporary file
+                BlobDownloadInfo downloadInfo =
+                    await _blobStorageService.DownloadSingleBlobAsync(fileName, cancellationToken);
+
+                // Set the content type and return the file as a download
+                return new FileStreamResult(downloadInfo.Content, "application/octet-stream")
+                {
+                    FileDownloadName = fileName
+                };
+            }
+            catch (FileNotFoundException ex)
+            {
+                log.LogWarning(ex.Message);
+                return new NotFoundObjectResult(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                log.LogError($"Error downloading blob: {ex.Message}");
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
     }
 }

@@ -12,7 +12,10 @@
 - **HTTP Trigger**: Can be triggered via HTTP `GET` or `POST` requests.
 
 ## Simple UI
-![image](https://github.com/user-attachments/assets/7b8c1c02-4252-472a-a201-7ffe80101124)
+The application also provides a user interface (UI) where all scripts or individual scripts can be executed, and the results can be downloaded in CSV format.
+
+![image](https://github.com/user-attachments/assets/97f48183-c939-40d6-99d5-6e417b6de884)
+
 
 
 ## Requirements
@@ -49,18 +52,6 @@
    - **Blob Storage**: Set up the connection string for the Azure Blob Storage in the `local.settings.json` file.
    - **SQL Database**: Configure the SQL connection string for executing scripts.
 
-   Example `local.settings.json`:
-   ```json
-   {
-     "IsEncrypted": false,
-     "Values": {
-       "AzureWebJobsStorage": "Your_AzureWebJobsStorage_ConnectionString",
-       "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-       "BlobStorageConnectionString": "Your_Blob_Storage_ConnectionString",
-       "SqlConnectionString": "Your_SQL_Database_ConnectionString"
-     }
-   }
-
 4. **Run the Function Locally**:
 
    ```bash
@@ -84,22 +75,6 @@
 The function can be triggered via an HTTP GET or POST request. The endpoint will execute all SQL scripts stored in the scripts container in Blob Storage and upload the results as CSV files back to the same container.
 ```bash
 curl -X POST https://<your-function-app-name>.azurewebsites.net/api/execute-scripts
-```
-```graphql
-SqlScriptRunner/
-│
-├── Services/
-│   ├── IBlobStorageService.cs           # Interface for blob storage operations
-│   ├── ISqlQueryExecutor.cs             # Interface for executing SQL queries
-│   └── Implementations/
-│       ├── BlobStorageService.cs        # Implements blob storage operations
-│       └── SqlQueryExecutor.cs          # Implements SQL execution logic
-│
-├── SqlScriptExecutionFunction.cs        # Azure function class
-├── local.settings.json                  # Local development settings
-├── host.json                            # Function configuration file
-├── SqlScriptRunner.csproj               # Project file
-└── README.md                            # Documentation
 ```
 
 ### Contributing

@@ -16,21 +16,22 @@ namespace SqlScriptRunner
     {
         private readonly IBlobStorageService _blobStorageService;
         private readonly ISqlQueryExecutorService _sqlQueryExecutorService;
+        private readonly IHtmlPageGeneratorService _htmlPageGeneratorService;
+        private readonly ILogger<SqlScriptExecutionFunction> _logger;
 
-        public SqlScriptExecutionFunction(IBlobStorageService blobStorageService, ISqlQueryExecutorService sqlQueryExecutorService)
+        public SqlScriptExecutionFunction(IBlobStorageService blobStorageService, ISqlQueryExecutorService sqlQueryExecutorService, IHtmlPageGeneratorService htmlPageGeneratorService, ILogger<SqlScriptExecutionFunction> logger)
         {
             _blobStorageService = blobStorageService;
             _sqlQueryExecutorService = sqlQueryExecutorService;
+            _htmlPageGeneratorService = htmlPageGeneratorService;
+            _logger = logger;
         }
 
         [FunctionName("ExecuteAllScripts")]
         public async Task<IActionResult> ExecuteAllScript(
-            [HttpTrigger(AuthorizationLevel.User, "get", "post", Route = "execute-scripts")] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.User, "get", "post", Route = "execute-scripts")] HttpRequest req)
         {
-            log.LogInformation("Function started.");
-            string responseMessage;
-
+            _logger.LogInformation("Executing all scripts requested...");
             try
             {
                 // Read all SQL scripts from Blob Storage
@@ -43,59 +44,54 @@ namespace SqlScriptRunner
                     await _blobStorageService.UploadScriptsResultsToBlobAsync(results, script.Key.Replace(".sql", ".csv"));
                 }
 
-                responseMessage = "All scripts executed and results uploaded successfully.";
+                string responseMessage = "All scripts executed and results uploaded successfully.";
+                _logger.LogInformation(responseMessage);
+                return new OkObjectResult(responseMessage);
             }
             catch (Exception ex)
             {
-                log.LogError("Something went wrong!!", ex);
+                _logger.LogError("Something went wrong!!", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
-
-            log.LogInformation(responseMessage);
-            return new OkObjectResult(responseMessage);
         }
         
         [FunctionName("ExecuteSingleScript")]
         public async Task<IActionResult> ExecuteScript(
-            [HttpTrigger(AuthorizationLevel.User, "get", "post", Route = "execute-script/{filename}")] HttpRequest req, string filename,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.User, "get", "post", Route = "execute-script/{filename}")] HttpRequest req, string fileName)
         {
-            log.LogInformation("Function started.");
-            string responseMessage;
-
+            _logger.LogInformation($"Executing {fileName} requested...");
             try
             {
                 // Read all SQL scripts from Blob Storage
-                var sqlScript = await _blobStorageService.ReadSingleSqlScriptAsync("scripts", filename);
+                var sqlScript = await _blobStorageService.ReadSingleSqlScriptAsync("scripts", fileName);
 
                 // Execute SQL script and upload results
-                var results = await _sqlQueryExecutorService.ExecuteSqlQueryAsync(sqlScript, filename);
-                await _blobStorageService.UploadScriptsResultsToBlobAsync(results, filename.Replace(".sql", ".csv"));
+                var results = await _sqlQueryExecutorService.ExecuteSqlQueryAsync(sqlScript, fileName);
+                await _blobStorageService.UploadScriptsResultsToBlobAsync(results, fileName.Replace(".sql", ".csv"));
 
-                responseMessage = "Script has been executed and results uploaded successfully.";
+                string responseMessage = $"{fileName} has been executed and results uploaded successfully!";
+                _logger.LogInformation(responseMessage);
+                return new OkObjectResult(responseMessage);
             }
             catch (Exception ex)
             {
-                log.LogError("Something went wrong!!", ex);
+                _logger.LogError("Something went wrong!!", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
-
-            log.LogInformation(responseMessage);
-            return new OkObjectResult(responseMessage);
         }
         
         [FunctionName("ScriptList")]
         public async Task<IActionResult> GetScripts(
-            [HttpTrigger(AuthorizationLevel.User, "get", Route = "scripts")] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.User, "get", Route = "scripts")] HttpRequest req)
         {
+            _logger.LogInformation($"Script list requested...");
             try
             {
                 // Read all SQL scripts from Blob Storage
                 var sqlScripts = await _blobStorageService.ReadAllSqlScriptsAsync("scripts");
 
                 // Create html page to visualize.
-                string html = HtmlPageGeneratorService.CreateHtmlPage(sqlScripts);
+                string html = _htmlPageGeneratorService.CreateHtmlPage(sqlScripts);
 
                 // Return the HTML content
                 return new ContentResult
@@ -107,7 +103,7 @@ namespace SqlScriptRunner
             }
             catch (Exception ex)
             {
-                log.LogError("Something went wrong!!", ex);
+                _logger.LogError("Something went wrong!!", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -116,10 +112,9 @@ namespace SqlScriptRunner
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "download/{fileName}")] HttpRequest req,
             string fileName,
-            ILogger log,
             CancellationToken cancellationToken)
         {
-            log.LogInformation($"Download request for blob: {fileName}");
+            _logger.LogInformation($"Download request for blob: {fileName}");
             try
             {
                 // Download the blob content to a temporary file
@@ -134,12 +129,12 @@ namespace SqlScriptRunner
             }
             catch (FileNotFoundException ex)
             {
-                log.LogWarning(ex.Message);
+                _logger.LogWarning(ex.Message);
                 return new NotFoundObjectResult(ex.Message);
             }
             catch (Exception ex)
             {
-                log.LogError($"Error downloading blob: {ex.Message}");
+                _logger.LogError($"Error downloading blob: {ex.Message}");
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

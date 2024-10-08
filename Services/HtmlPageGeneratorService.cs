@@ -4,9 +4,9 @@ using System.Text;
 
 namespace SqlScriptRunner.Services;
 
-public static class HtmlPageGeneratorService
+public class HtmlPageGeneratorService : IHtmlPageGeneratorService
 {
-    public static string CreateHtmlPage(Dictionary<string, string> sqlScripts)
+    public string CreateHtmlPage(Dictionary<string, string> sqlScripts)
     {
         // Start building the HTML page
         var htmlBuilder = new StringBuilder();
@@ -52,6 +52,7 @@ public static class HtmlPageGeneratorService
 
         htmlBuilder.Append("</style></head><body>");
         htmlBuilder.Append("<h1>Available SQL Scripts</h1>");
+        htmlBuilder.Append($"<h3><a target=\"_blank\" href=\"/api/execute-scripts\">Execute all</a></h3>");
 
         // Create the table and define the headers
         htmlBuilder.Append("<table>");

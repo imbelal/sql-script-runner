@@ -10,8 +10,9 @@ namespace SqlScriptRunner
         public override void Configure(IFunctionsHostBuilder builder)
         {
             // Register services
-            builder.Services.AddSingleton<IBlobStorageService, BlobStorageService>();
-            builder.Services.AddSingleton<ISqlQueryExecutorService, SqlQueryExecutorService>();
+            builder.Services.AddTransient<IBlobStorageService, BlobStorageService>();
+            builder.Services.AddTransient<ISqlQueryExecutorService, SqlQueryExecutorService>();
+            builder.Services.AddSingleton<IHtmlPageGeneratorService, HtmlPageGeneratorService>();
         }
     }
 }

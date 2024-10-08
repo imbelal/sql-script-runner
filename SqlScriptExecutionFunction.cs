@@ -5,9 +5,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using SqlScriptRunner.Services;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs.Models;
@@ -25,9 +23,9 @@ namespace SqlScriptRunner
             _sqlQueryExecutorService = sqlQueryExecutorService;
         }
 
-        [FunctionName("execute-scripts")]
+        [FunctionName("ExecuteAllScripts")]
         public async Task<IActionResult> ExecuteAllScript(
-            [HttpTrigger(AuthorizationLevel.User, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.User, "get", "post", Route = "execute-scripts")] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("Function started.");
@@ -57,7 +55,7 @@ namespace SqlScriptRunner
             return new OkObjectResult(responseMessage);
         }
         
-        [FunctionName("execute-script")]
+        [FunctionName("ExecuteSingleScript")]
         public async Task<IActionResult> ExecuteScript(
             [HttpTrigger(AuthorizationLevel.User, "get", "post", Route = "execute-script/{filename}")] HttpRequest req, string filename,
             ILogger log)
@@ -86,9 +84,9 @@ namespace SqlScriptRunner
             return new OkObjectResult(responseMessage);
         }
         
-        [FunctionName("scripts")]
+        [FunctionName("ScriptList")]
         public async Task<IActionResult> GetScripts(
-            [HttpTrigger(AuthorizationLevel.User, "get", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.User, "get", Route = "scripts")] HttpRequest req,
             ILogger log)
         {
             try
@@ -114,17 +112,14 @@ namespace SqlScriptRunner
             }
         }
         
-        [FunctionName("DownloadBlobFile")]
+        [FunctionName("DownloadSingleCsvFile")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "download/{fileName}")] HttpRequest req,
             string fileName,
             ILogger log,
             CancellationToken cancellationToken)
         {
-            // File extension changed because we want to download the script result which is saved in csv format.
-            fileName = fileName.Replace(".sql", ".csv");
             log.LogInformation($"Download request for blob: {fileName}");
-
             try
             {
                 // Download the blob content to a temporary file

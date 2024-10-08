@@ -62,14 +62,15 @@ public static class HtmlPageGeneratorService
         foreach (var script in sqlScripts)
         {
             // Assuming script has a Name or Key that you can use in the URL
-            var scriptName = script.Key; // Replace this with however you get script name
+            var scriptName = script.Key;
             var encodedScriptName = Uri.EscapeDataString(scriptName);
+            var encodedCsvName = Uri.EscapeDataString(scriptName.Replace(".sql", ".csv"));
 
             // Add a row with a link to execute the script
             htmlBuilder.Append("<tr>");
             htmlBuilder.Append($"<td>{scriptName}</td>");
-            htmlBuilder.Append($"<td><a href=\"/api/execute-script/{encodedScriptName}\">Execute</a> || ");
-            htmlBuilder.Append($"<a href=\"/api/download/{encodedScriptName}\">Download</a></td>");
+            htmlBuilder.Append($"<td><a target=\"_blank\" href=\"/api/execute-script/{encodedScriptName}\">Execute</a> || ");
+            htmlBuilder.Append($"<a href=\"/api/download/{encodedCsvName}\">Download</a></td>");
             htmlBuilder.Append("</tr>");
         }
 

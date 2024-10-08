@@ -12,6 +12,7 @@
 - **HTTP Trigger**: Can be triggered via HTTP `GET` or `POST` requests.
 
 ## Simple UI
+The function app also has a ui from where all script or individual script can be executed and then downloaded the result in csv format.
 ![image](https://github.com/user-attachments/assets/97f48183-c939-40d6-99d5-6e417b6de884)
 
 

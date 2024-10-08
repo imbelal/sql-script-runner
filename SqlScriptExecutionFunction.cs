@@ -18,6 +18,8 @@ namespace SqlScriptRunner
         private readonly ISqlQueryExecutorService _sqlQueryExecutorService;
         private readonly IHtmlPageGeneratorService _htmlPageGeneratorService;
         private readonly ILogger<SqlScriptExecutionFunction> _logger;
+        private const string ScriptsContainer = "scripts";
+        private const string CsvContainerPrefix = "evaluations";
 
         public SqlScriptExecutionFunction(IBlobStorageService blobStorageService, ISqlQueryExecutorService sqlQueryExecutorService, IHtmlPageGeneratorService htmlPageGeneratorService, ILogger<SqlScriptExecutionFunction> logger)
         {
@@ -35,16 +37,16 @@ namespace SqlScriptRunner
             try
             {
                 // Read all SQL scripts from Blob Storage
-                var sqlScripts = await _blobStorageService.ReadAllSqlScriptsAsync("scripts");
+                var sqlScripts = await _blobStorageService.ReadAllSqlScriptsAsync(ScriptsContainer);
 
                 // Execute each SQL script and upload results
                 foreach (var script in sqlScripts)
                 {
                     var results = await _sqlQueryExecutorService.ExecuteSqlQueryAsync(script.Value, script.Key);
-                    await _blobStorageService.UploadScriptsResultsToBlobAsync(results, script.Key.Replace(".sql", ".csv"));
+                    await _blobStorageService.UploadScriptsResultsToBlobAsync(results, CsvContainerPrefix, script.Key);
                 }
 
-                string responseMessage = "All scripts executed and results uploaded successfully.";
+                string responseMessage = $"{sqlScripts.Count} scripts executed successfully and results has been uploaded!!";
                 _logger.LogInformation(responseMessage);
                 return new OkObjectResult(responseMessage);
             }
@@ -63,13 +65,13 @@ namespace SqlScriptRunner
             try
             {
                 // Read all SQL scripts from Blob Storage
-                var sqlScript = await _blobStorageService.ReadSingleSqlScriptAsync("scripts", fileName);
+                var sqlScript = await _blobStorageService.ReadSingleSqlScriptAsync(ScriptsContainer, fileName);
 
                 // Execute SQL script and upload results
                 var results = await _sqlQueryExecutorService.ExecuteSqlQueryAsync(sqlScript, fileName);
-                await _blobStorageService.UploadScriptsResultsToBlobAsync(results, fileName.Replace(".sql", ".csv"));
+                await _blobStorageService.UploadScriptsResultsToBlobAsync(results, CsvContainerPrefix, fileName);
 
-                string responseMessage = $"{fileName} has been executed and results uploaded successfully!";
+                string responseMessage = $"{fileName} has been executed successfully and result has been uploaded!!";
                 _logger.LogInformation(responseMessage);
                 return new OkObjectResult(responseMessage);
             }
@@ -88,7 +90,7 @@ namespace SqlScriptRunner
             try
             {
                 // Read all SQL scripts from Blob Storage
-                var sqlScripts = await _blobStorageService.ReadAllSqlScriptsAsync("scripts");
+                var sqlScripts = await _blobStorageService.ReadAllSqlScriptsAsync(ScriptsContainer);
 
                 // Create html page to visualize.
                 string html = _htmlPageGeneratorService.CreateHtmlPage(sqlScripts);
@@ -119,7 +121,7 @@ namespace SqlScriptRunner
             {
                 // Download the blob content to a temporary file
                 BlobDownloadInfo downloadInfo =
-                    await _blobStorageService.DownloadSingleBlobAsync(fileName, cancellationToken);
+                    await _blobStorageService.DownloadSingleBlobAsync(CsvContainerPrefix, fileName, cancellationToken);
 
                 // Set the content type and return the file as a download
                 return new FileStreamResult(downloadInfo.Content, "application/octet-stream")

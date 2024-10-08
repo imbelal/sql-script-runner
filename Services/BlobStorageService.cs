@@ -49,7 +49,6 @@ namespace SqlScriptRunner.Services
             _logger.LogInformation($"Reading {blobName}...");
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
             
-            // Get the blob client for the specific blob (SQL script)
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
             BlobDownloadInfo download = await blobClient.DownloadAsync(cancellationToken);
             
@@ -62,10 +61,11 @@ namespace SqlScriptRunner.Services
             return scriptContent;
         }
         
-        public async Task<BlobDownloadInfo> DownloadSingleBlobAsync(string blobName, CancellationToken cancellationToken = default)
+        public async Task<BlobDownloadInfo> DownloadSingleBlobAsync(string csvContainerPrefix, string blobName,
+            CancellationToken cancellationToken = default)
         {
             _logger.LogInformation($"Checking container...");
-            string containerName = "evaluations-" + DateTime.Now.ToString("dd-MM-yyyy");
+            string containerName = $"{csvContainerPrefix}-{DateTime.Now:dd-MM-yyyy}";
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
             if (!await containerClient.ExistsAsync())
             {
@@ -73,7 +73,6 @@ namespace SqlScriptRunner.Services
                 return null;
             }
             
-            // Get the blob client for the specific blob.
             _logger.LogInformation($"Checking the blob {blobName}...");
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
             if (!await blobClient.ExistsAsync())
@@ -86,10 +85,11 @@ namespace SqlScriptRunner.Services
             return downloadInfo;
         }
 
-        public async Task UploadScriptsResultsToBlobAsync(List<string[]> results, string blobName, CancellationToken cancellationToken = default)
+        public async Task UploadScriptsResultsToBlobAsync(List<string[]> results, string csvContainerPrefix, string blobName, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Uploading has started for ", blobName);
-            string containerName = "evaluations-" + DateTime.Now.ToString("dd-MM-yyyy");
+            blobName = blobName.Replace(".sql", ".csv");
+            string containerName = $"{csvContainerPrefix}-{DateTime.Now:dd-MM-yyyy}";
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
             await containerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
 

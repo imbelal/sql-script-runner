@@ -28,19 +28,22 @@ namespace SqlScriptRunner.Services
         /// <summary>
         /// Download single blob.
         /// </summary>
+        /// <param name="csvContainerPrefix"></param>
         /// <param name="blobName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<BlobDownloadInfo> DownloadSingleBlobAsync(string blobName,
+        Task<BlobDownloadInfo> DownloadSingleBlobAsync(string csvContainerPrefix, string blobName,
             CancellationToken cancellationToken = default);
-        
+
         /// <summary>
         /// Create and upload csv from sql script result.
         /// </summary>
         /// <param name="results"></param>
+        /// <param name="csvContainerPrefix"></param>
         /// <param name="blobName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task UploadScriptsResultsToBlobAsync(List<string[]> results, string blobName, CancellationToken cancellationToken = default);
+        Task UploadScriptsResultsToBlobAsync(List<string[]> results, string csvContainerPrefix, string blobName,
+            CancellationToken cancellationToken = default);
     }
 }

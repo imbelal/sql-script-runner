@@ -11,6 +11,10 @@
 - **Result Uploads**: Converts query results into CSV format and uploads them back to Blob Storage.
 - **HTTP Trigger**: Can be triggered via HTTP `GET` or `POST` requests.
 
+## Simple UI
+![image](https://github.com/user-attachments/assets/7b8c1c02-4252-472a-a201-7ffe80101124)
+
+
 ## Requirements
 
 - **Azure Account**: For setting up Function App and Blob Storage.

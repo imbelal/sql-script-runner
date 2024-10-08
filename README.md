@@ -50,18 +50,6 @@
    - **Blob Storage**: Set up the connection string for the Azure Blob Storage in the `local.settings.json` file.
    - **SQL Database**: Configure the SQL connection string for executing scripts.
 
-   Example `local.settings.json`:
-   ```json
-   {
-     "IsEncrypted": false,
-     "Values": {
-       "AzureWebJobsStorage": "Your_AzureWebJobsStorage_ConnectionString",
-       "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-       "BlobStorageConnectionString": "Your_Blob_Storage_ConnectionString",
-       "SqlConnectionString": "Your_SQL_Database_ConnectionString"
-     }
-   }
-
 4. **Run the Function Locally**:
 
    ```bash

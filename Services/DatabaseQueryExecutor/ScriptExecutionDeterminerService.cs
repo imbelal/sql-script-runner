@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using SqlScriptRunner.ExecutionStrategies;
 
-namespace SqlScriptRunner.Services;
+namespace SqlScriptRunner.Services.DatabaseQueryExecutor;
 
 public class ScriptExecutionDeterminerService : IScriptExecutionDeterminerService
 {

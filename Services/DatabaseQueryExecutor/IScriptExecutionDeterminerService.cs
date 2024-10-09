@@ -1,4 +1,4 @@
-namespace SqlScriptRunner.Services;
+namespace SqlScriptRunner.Services.DatabaseQueryExecutor;
 
 public interface IScriptExecutionDeterminerService
 {

@@ -8,6 +8,9 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using SqlScriptRunner.ExceptionHandler;
 using SqlScriptRunner.Services;
+using SqlScriptRunner.Services.BlobStorage;
+using SqlScriptRunner.Services.DatabaseQueryExecutor;
+using SqlScriptRunner.Services.HtmlPageGenerator;
 
 namespace SqlScriptRunner
 {

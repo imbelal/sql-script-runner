@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs.Models;
 
-namespace SqlScriptRunner.Services
+namespace SqlScriptRunner.Services.BlobStorage
 {
     public interface IBlobStorageService
     {

@@ -1,14 +1,14 @@
-﻿using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Microsoft.Extensions.Logging;
 
-namespace SqlScriptRunner.Services
+namespace SqlScriptRunner.Services.BlobStorage
 {
     public class BlobStorageService : IBlobStorageService
     {

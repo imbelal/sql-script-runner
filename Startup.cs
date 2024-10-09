@@ -2,6 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using SqlScriptRunner.ExecutionStrategies;
 using SqlScriptRunner.Services;
+using SqlScriptRunner.Services.BlobStorage;
+using SqlScriptRunner.Services.DatabaseQueryExecutor;
+using SqlScriptRunner.Services.HtmlPageGenerator;
 
 [assembly: FunctionsStartup(typeof(SqlScriptRunner.Startup))]
 namespace SqlScriptRunner

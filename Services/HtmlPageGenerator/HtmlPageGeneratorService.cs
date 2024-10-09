@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SqlScriptRunner.Services;
+namespace SqlScriptRunner.Services.HtmlPageGenerator;
 
 public class HtmlPageGeneratorService : IHtmlPageGeneratorService
 {

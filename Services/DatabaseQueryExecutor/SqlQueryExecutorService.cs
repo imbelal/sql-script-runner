@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
-namespace SqlScriptRunner.Services
+namespace SqlScriptRunner.Services.DatabaseQueryExecutor
 {
     public class SqlQueryExecutorService : ISqlQueryExecutorService
     {

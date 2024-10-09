@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SqlScriptRunner.Services
+namespace SqlScriptRunner.Services.DatabaseQueryExecutor
 {
     public interface ISqlQueryExecutorService
     {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SqlScriptRunner.Services;
+namespace SqlScriptRunner.Services.HtmlPageGenerator;
 
 public interface IHtmlPageGeneratorService
 {

@@ -12,6 +12,13 @@
 - **Result Uploads**: Converts query results into CSV format and uploads them back to Blob Storage.
 - **HTTP Trigger**: Can be triggered via HTTP `GET` or `POST` requests.
 
+### Script Execution Strategies
+The application utilizes various script execution strategies to determine whether a script should be executed based on its filename. These strategies enhance flexibility and allow the system to easily adapt to different execution schedules.
+
+- **Daily Execution**: Scripts named with the suffix script1_daily.sql are executed daily.
+- **Weekly Execution**: Scripts suffix with weekly_ followed by the day of the week (e.g., script2_weekly_monday.sql) are executed on the specified day.
+- **Monthly Execution**: Scripts suffix with monthly_ followed by a day number (e.g., script3_monthly_01.sql) are executed on the specified day of each month.
+
 ## Simple UI
 The application also provides a user interface (UI) where all scripts or individual scripts can be executed, and the results can be downloaded in CSV format.
 
@@ -77,13 +84,6 @@ The function can be triggered via an HTTP GET or POST request. The endpoint will
 ```bash
 curl -X POST https://<your-function-app-name>.azurewebsites.net/api/execute-scripts
 ```
-
-### Script Execution Strategies
-The application utilizes various script execution strategies to determine whether a script should be executed based on its filename. These strategies enhance flexibility and allow the system to easily adapt to different execution schedules.
-
-- **Daily Execution**: Scripts named with the suffix script1_daily.sql are executed daily.
-- **Weekly Execution**: Scripts suffix with weekly_ followed by the day of the week (e.g., script2_weekly_monday.sql) are executed on the specified day.
-- **Monthly Execution**: Scripts suffix with monthly_ followed by a day number (e.g., script3_monthly_01.sql) are executed on the specified day of each month.
 
 ### Contributing
 Feel free to submit issues or pull requests if you would like to contribute. Please ensure that any code changes are well-tested and documented.

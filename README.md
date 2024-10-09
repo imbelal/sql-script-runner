@@ -8,6 +8,7 @@
 
 - **Blob Storage Integration**: Reads SQL scripts from a specified blob container.
 - **SQL Query Execution**: Executes the SQL scripts on a target SQL database.
+- **Script Execution Strategies**: Supports various strategies for executing scripts based on naming conventions (e.g., daily, weekly, monthly).
 - **Result Uploads**: Converts query results into CSV format and uploads them back to Blob Storage.
 - **HTTP Trigger**: Can be triggered via HTTP `GET` or `POST` requests.
 
@@ -76,6 +77,13 @@ The function can be triggered via an HTTP GET or POST request. The endpoint will
 ```bash
 curl -X POST https://<your-function-app-name>.azurewebsites.net/api/execute-scripts
 ```
+
+### Script Execution Strategies
+The application utilizes various script execution strategies to determine whether a script should be executed based on its filename. These strategies enhance flexibility and allow the system to easily adapt to different execution schedules.
+
+- **Daily Execution**: Scripts named with the suffix _daily.sql are executed daily.
+- **Weekly Execution**: Scripts prefixed with weekly_ followed by the day of the week (e.g., weekly_monday.sql) are executed on the specified day.
+- **Monthly Execution**: Scripts prefixed with monthly_ followed by a day number (e.g., monthly_01.sql) are executed on the specified day of each month.
 
 ### Contributing
 Feel free to submit issues or pull requests if you would like to contribute. Please ensure that any code changes are well-tested and documented.

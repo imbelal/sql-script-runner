@@ -16,15 +16,17 @@ namespace SqlScriptRunner
         private readonly IBlobStorageService _blobStorageService;
         private readonly ISqlQueryExecutorService _sqlQueryExecutorService;
         private readonly IHtmlPageGeneratorService _htmlPageGeneratorService;
+        private readonly IScriptExecutionDeterminerService _scriptExecutionDeterminerService;
         private readonly ILogger<SqlScriptExecutionFunction> _logger;
         private const string ScriptsContainer = "scripts";
         private const string CsvContainerPrefix = "evaluations";
 
-        public SqlScriptExecutionFunction(IBlobStorageService blobStorageService, ISqlQueryExecutorService sqlQueryExecutorService, IHtmlPageGeneratorService htmlPageGeneratorService, ILogger<SqlScriptExecutionFunction> logger)
+        public SqlScriptExecutionFunction(IBlobStorageService blobStorageService, ISqlQueryExecutorService sqlQueryExecutorService, IScriptExecutionDeterminerService scriptExecutionDeterminerService, IHtmlPageGeneratorService htmlPageGeneratorService, ILogger<SqlScriptExecutionFunction> logger)
         {
             _blobStorageService = blobStorageService;
             _sqlQueryExecutorService = sqlQueryExecutorService;
             _htmlPageGeneratorService = htmlPageGeneratorService;
+            _scriptExecutionDeterminerService = scriptExecutionDeterminerService;
             _logger = logger;
         }
 
@@ -37,15 +39,21 @@ namespace SqlScriptRunner
                 _logger.LogInformation("Executing all scripts requested...");
                 // Read all SQL scripts from Blob Storage
                 var sqlScripts = await _blobStorageService.ReadAllSqlScriptsAsync(ScriptsContainer);
+                
+                int executedScriptsCount = 0;
                 // Execute each SQL script and upload results
                 foreach (var script in sqlScripts)
                 {
-                    var results = await _sqlQueryExecutorService.ExecuteSqlQueryAsync(script.Value, script.Key);
-                    await _blobStorageService.UploadScriptsResultsToBlobAsync(results, CsvContainerPrefix, script.Key);
+                    if (_scriptExecutionDeterminerService.ShouldExecuteScript(script.Key))
+                    {
+                        var results = await _sqlQueryExecutorService.ExecuteSqlQueryAsync(script.Value, script.Key);
+                        await _blobStorageService.UploadScriptsResultsToBlobAsync(results, CsvContainerPrefix, script.Key);
+                        executedScriptsCount++;
+                    }
                 }
                 
                 // Create response message and return.
-                string responseMessage = $"{sqlScripts.Count} scripts executed successfully and results have been uploaded!!";
+                string responseMessage = $"{executedScriptsCount} scripts executed successfully and results have been uploaded!!";
                 _logger.LogInformation(responseMessage);
                 return new OkObjectResult(responseMessage);
                 

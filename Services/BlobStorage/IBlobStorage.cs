@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Azure.Storage.Blobs.Models;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Azure.Storage.Blobs.Models;
 
 namespace SqlScriptRunner.Services.BlobStorage
 {
-    public interface IBlobStorageService
+    public interface IBlobStorage
     {
         /// <summary>
         /// Method to read scripts from given blob container.

@@ -1,17 +1,17 @@
-using System.Collections.Generic;
 using SqlScriptRunner.ExecutionStrategies;
+using System.Collections.Generic;
 
-namespace SqlScriptRunner.Services.DatabaseQueryExecutor;
+namespace SqlScriptRunner.Services.ScriptExecutionDeterminer;
 
-public class ScriptExecutionDeterminerService : IScriptExecutionDeterminerService
+public class ScriptExecutionDeterminer : IScriptExecutionDeterminer
 {
     private readonly IEnumerable<IScriptExecutionStrategy> _strategies;
 
-    public ScriptExecutionDeterminerService(IEnumerable<IScriptExecutionStrategy> strategies)
+    public ScriptExecutionDeterminer(IEnumerable<IScriptExecutionStrategy> strategies)
     {
-        _strategies =  strategies;
+        _strategies = strategies;
     }
-    
+
     public bool ShouldExecuteScript(string scriptFileName)
     {
         foreach (var strategy in _strategies)

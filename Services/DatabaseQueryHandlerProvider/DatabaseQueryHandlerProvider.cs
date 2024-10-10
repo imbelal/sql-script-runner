@@ -25,6 +25,7 @@ public class DatabaseQueryHandlerProvider : IDatabaseQueryHandlerProvider
         {
             "SqlServer" => _queryExecutors.FirstOrDefault(q => q.GetType().Name == nameof(SqlServerQueryHandler)),
             "Postgres" => _queryExecutors.FirstOrDefault(q => q.GetType().Name == nameof(PostgresQueryHandler)),
+            "MySql" => _queryExecutors.FirstOrDefault(q => q.GetType().Name == nameof(MySqlQueryHandler)),
             _ => throw new InvalidOperationException($"Unsupported database type: {databaseType}")
         };
     }

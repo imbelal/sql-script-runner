@@ -25,9 +25,10 @@ namespace SqlScriptRunner
 
             // For SQL Server
             builder.Services.AddTransient<IDatabaseQueryHandler, SqlServerQueryHandler>();
-
             // For PostgreSQL
             builder.Services.AddTransient<IDatabaseQueryHandler, PostgresQueryHandler>();
+            // For MySql
+            builder.Services.AddTransient<IDatabaseQueryHandler, MySqlQueryHandler>();
 
             // Register the factory
             builder.Services.AddTransient<IDatabaseQueryHandlerProvider, DatabaseQueryHandlerProvider>();

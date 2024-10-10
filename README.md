@@ -8,7 +8,7 @@
 
 - **Blob Storage Integration**: Reads SQL scripts from a specified blob container.
 - **SQL Query Execution**: Executes the SQL scripts on a target SQL database.
-- ** Multi-Database Support **: Supports MSSQL, PostgreSql and MySql database.
+- **Multi-Database Support**: Supports MSSQL, PostgreSql and MySql database.
 - **Script Execution Strategies**: Supports various strategies for executing scripts based on naming conventions (e.g., daily, weekly, monthly).
 - **Result Uploads**: Converts query results into CSV format and uploads them back to Blob Storage.
 - **HTTP Trigger**: Can be triggered via HTTP `GET` or `POST` requests.

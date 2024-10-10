@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SqlScriptRunner.Services.DatabaseQueryExecutor
 {
-    public interface ISqlQueryExecutorService
+    public interface ISqlQueryExecutor
     {
         /// <summary>
         /// Method to execute sql query.

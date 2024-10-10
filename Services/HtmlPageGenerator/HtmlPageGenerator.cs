@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SqlScriptRunner.Services.HtmlPageGenerator;
 
-public class HtmlPageGeneratorService : IHtmlPageGeneratorService
+public class HtmlPageGenerator : IHtmlPageGenerator
 {
     public string CreateHtmlPage(Dictionary<string, string> sqlScripts)
     {
@@ -80,7 +80,7 @@ public class HtmlPageGeneratorService : IHtmlPageGeneratorService
         htmlBuilder.Append("</table>");
         htmlBuilder.Append("</body></html>");
 
-        
+
         return htmlBuilder.ToString();
     }
 }

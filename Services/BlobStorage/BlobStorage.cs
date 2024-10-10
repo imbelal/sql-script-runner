@@ -1,21 +1,21 @@
-﻿using System;
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
-using Microsoft.Extensions.Logging;
 
 namespace SqlScriptRunner.Services.BlobStorage
 {
-    public class BlobStorageService : IBlobStorageService
+    public class BlobStorage : IBlobStorage
     {
         private readonly BlobServiceClient _blobServiceClient;
         private readonly ILogger _logger;
 
-        public BlobStorageService(ILogger<BlobStorageService> logger)
+        public BlobStorage(ILogger<BlobStorage> logger)
         {
             var connectionString = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
             _blobServiceClient = new BlobServiceClient(connectionString);
@@ -43,15 +43,15 @@ namespace SqlScriptRunner.Services.BlobStorage
             _logger.LogInformation("Reading all sql scripts has been completed!");
             return sqlScripts;
         }
-        
+
         public async Task<string> ReadSingleSqlScriptAsync(string containerName, string blobName, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation($"Reading {blobName}...");
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
-            
+
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
             BlobDownloadInfo download = await blobClient.DownloadAsync(cancellationToken);
-            
+
             string scriptContent;
             using (var reader = new StreamReader(download.Content, Encoding.UTF8))
             {
@@ -60,7 +60,7 @@ namespace SqlScriptRunner.Services.BlobStorage
             _logger.LogInformation($"Reading {blobName} has been completed!");
             return scriptContent;
         }
-        
+
         public async Task<BlobDownloadInfo> DownloadSingleBlobAsync(string csvContainerPrefix, string blobName,
             CancellationToken cancellationToken = default)
         {
@@ -72,7 +72,7 @@ namespace SqlScriptRunner.Services.BlobStorage
                 _logger.LogInformation("Container does not exist!");
                 return null;
             }
-            
+
             _logger.LogInformation($"Checking the blob {blobName}...");
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
             if (!await blobClient.ExistsAsync())

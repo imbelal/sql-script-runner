@@ -8,6 +8,7 @@
 
 - **Blob Storage Integration**: Reads SQL scripts from a specified blob container.
 - **SQL Query Execution**: Executes the SQL scripts on a target SQL database.
+- ** Multi-Database Support **: Supports MSSQL, PostgreSql and MySql database.
 - **Script Execution Strategies**: Supports various strategies for executing scripts based on naming conventions (e.g., daily, weekly, monthly).
 - **Result Uploads**: Converts query results into CSV format and uploads them back to Blob Storage.
 - **HTTP Trigger**: Can be triggered via HTTP `GET` or `POST` requests.
@@ -30,7 +31,7 @@ The application also provides a user interface (UI) where all scripts or individ
 
 - **Azure Account**: For setting up Function App and Blob Storage.
 - **Blob Storage**: SQL scripts must be uploaded to a blob container (e.g., `scripts`).
-- **SQL Database**: The function will execute the SQL scripts against a configured SQL database.
+- **SQL Database**: The function will execute the SQL scripts against a configured SQL database (MSSQL / PostgreSql / MySql).
 - **Azure Functions Core Tools**: For local development and testing.
 
 ## Getting Started

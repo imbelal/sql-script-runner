@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using SqlScriptRunner.Services.DatabaseQueryExecutorProvider;
+using SqlScriptRunner.Services.DatabaseQueryHandlerProvider;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;

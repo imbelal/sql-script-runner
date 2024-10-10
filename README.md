@@ -23,9 +23,7 @@ The application utilizes various script execution strategies to determine whethe
 ## Simple UI
 The application also provides a user interface (UI) where all scripts or individual scripts can be executed, and the results can be downloaded in CSV format.
 
-![image](https://github.com/user-attachments/assets/7ff7c6f1-8ae3-424a-acd9-57b0ea0372d3)
-
-
+![image](https://github.com/user-attachments/assets/a1b046d8-8a39-4243-88bc-a704e9ad2ea6)
 
 
 

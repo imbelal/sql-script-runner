@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SqlScriptRunner.ExecutionStrategies;
 using SqlScriptRunner.Services.BlobStorage;
 using SqlScriptRunner.Services.DatabaseQueryExecutor;
-using SqlScriptRunner.Services.DatabaseQueryExecutorProvider;
+using SqlScriptRunner.Services.DatabaseQueryHandlerProvider;
 using SqlScriptRunner.Services.DatabaseQueryHandlers;
 using SqlScriptRunner.Services.HtmlPageGenerator;
 using SqlScriptRunner.Services.ScriptExecutionDeterminer;

@@ -1,4 +1,4 @@
-# SqlScriptRunner Azure Function App
+# SqlScriptRunner Function App
 
 ## Overview
 

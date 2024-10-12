@@ -57,7 +57,7 @@ The application also provides a user interface (UI) where all scripts or individ
 
 3. **Configure Environment Variables**:
 
-   - Set environment variables in the `local.settings.json` file.
+   - Create `local.settings.json` file in the root folder and add below environment variables.
   
      ```
          {

@@ -61,11 +61,10 @@ namespace SqlScriptRunner.Services.BlobStorage
             return scriptContent;
         }
 
-        public async Task<BlobDownloadInfo> DownloadSingleBlobAsync(string csvContainerPrefix, string blobName,
+        public async Task<BlobDownloadInfo> DownloadSingleBlobAsync(string containerName, string blobName,
             CancellationToken cancellationToken = default)
         {
             _logger.LogInformation($"Checking container...");
-            string containerName = $"{csvContainerPrefix}-{DateTime.Now:dd-MM-yyyy}";
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
             if (!await containerClient.ExistsAsync())
             {

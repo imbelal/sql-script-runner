@@ -11,8 +11,9 @@ namespace SqlScriptRunner.Services.DatabaseQueryExecutor
         /// </summary>
         /// <param name="sqlQuery"></param>
         /// <param name="fileName"></param>
+        /// <param name="parameters"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<List<string[]>> ExecuteSqlQueryAsync(string sqlQuery, string fileName, CancellationToken cancellationToken = default);
+        Task<List<string[]>> ExecuteSqlQueryAsync(string sqlQuery, string fileName, Dictionary<string, string> parameters, CancellationToken cancellationToken = default);
     }
 }

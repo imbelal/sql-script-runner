@@ -78,8 +78,14 @@ The application also provides a user interface (UI) where all scripts or individ
    ```
 3. **Set Environment Variables**:
    In the Azure portal, navigate to your Function App, go to "Configuration" and add the following application settings:
-   - BlobStorageConnectionString: Your Azure Blob Storage connection string.
-   - SqlConnectionString: Your SQL database connection string.
+   - **AzureWebJobsStorage**: Azure Blob Storage connection string.
+   - **SqlConnectionString**: Connection string for mssql database.
+   - **PostgresConnectionString**: Connection string for postgresql database.
+   - **MySqlConnectionString**: Connection string for mysql database.
+   - **DatabaseType**: The database type values should be "SqlServer" for MSSQL, "Postgres" for PostgreSQL, and "MySql" for MySQL.
+   - **ScriptsContainer**: Name of the container where scripts are located.
+   - **CsvContainerPrefix**: The CsvContainerPrefix is the prefix for the container where CSV files will be uploaded daily; for example, if set to 'evaluation,' a container with this prefix will be created each day, suffixed with the current date.
+   - **TimerSchedule**: The TimerSchedule is set to "58 21 * * *", which is a cron expression used for automated scheduling; this value indicates that the task will be triggered every night at 9:58 PM.
   
 ### 📡 Usage
 The function can be triggered via an HTTP GET or POST request. The endpoint will execute all SQL scripts stored in the scripts container in Blob Storage and upload the results as CSV files back to the same container.

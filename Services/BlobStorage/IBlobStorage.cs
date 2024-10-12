@@ -28,11 +28,11 @@ namespace SqlScriptRunner.Services.BlobStorage
         /// <summary>
         /// Download single blob.
         /// </summary>
-        /// <param name="csvContainerPrefix"></param>
+        /// <param name="containerName"></param>
         /// <param name="blobName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<BlobDownloadInfo> DownloadSingleBlobAsync(string csvContainerPrefix, string blobName,
+        Task<BlobDownloadInfo> DownloadSingleBlobAsync(string containerName, string blobName,
             CancellationToken cancellationToken = default);
 
         /// <summary>

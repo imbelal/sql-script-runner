@@ -17,12 +17,12 @@ namespace SqlScriptRunner.Services.DatabaseQueryExecutor
             _databaseQueryHandlerProvider = databaseQueryHandlerProvider;
         }
 
-        public async Task<List<string[]>> ExecuteSqlQueryAsync(string sqlQuery, string fileName, CancellationToken cancellationToken = default)
+        public async Task<List<string[]>> ExecuteSqlQueryAsync(string sqlQuery, string fileName, Dictionary<string, string> parameters, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Execution has started for {FileName}", fileName);
 
             var databaseQueryExecutor = _databaseQueryHandlerProvider.CreateExecutor();
-            var results = await databaseQueryExecutor.ExecuteQueryAsync(sqlQuery, cancellationToken);
+            var results = await databaseQueryExecutor.ExecuteQueryAsync(sqlQuery, parameters, cancellationToken);
 
             _logger.LogInformation("Execution has finished for {FileName}", fileName);
             return results;

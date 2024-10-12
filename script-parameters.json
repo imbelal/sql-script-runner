@@ -1,0 +1,12 @@
+// This configuration file should be stored in the same Blob Storage container as the SQL scripts. 
+// It contains parameters specific to each SQL script and is used by the application to dynamically populate
+// the SQL queries with the required values during execution. Ensure that the filename is correctly referenced
+// in the application to facilitate proper parameter mapping for each script.
+{
+  "Script1_daily.sql": {
+    "MinSalary": "50000"
+  },
+  "Script2_daily.sql": {
+    "FirstName": "John"
+  }
+}

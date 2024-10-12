@@ -8,7 +8,7 @@ namespace SqlScriptRunner.Services.DatabaseQueryHandlers;
 
 public class MySqlQueryHandler : IDatabaseQueryHandler
 {
-    public async Task<List<string[]>> ExecuteQueryAsync(string sqlQuery, CancellationToken cancellationToken = default)
+    public async Task<List<string[]>> ExecuteQueryAsync(string sqlQuery, Dictionary<string, string> parameters, CancellationToken cancellationToken = default)
     {
         string connectionString = Environment.GetEnvironmentVariable("MySqlConnectionString");
         var results = new List<string[]>();
@@ -18,6 +18,8 @@ public class MySqlQueryHandler : IDatabaseQueryHandler
             await connection.OpenAsync(cancellationToken);
             await using (var command = new MySqlCommand(sqlQuery, connection))
             {
+                // Add parameters
+                AddParams(command, parameters);
                 await using (var reader = await command.ExecuteReaderAsync(cancellationToken))
                 {
                     // Read column names first
@@ -43,5 +45,15 @@ public class MySqlQueryHandler : IDatabaseQueryHandler
         }
 
         return results;
+    }
+
+    private static void AddParams(MySqlCommand command, Dictionary<string, string> parameters)
+    {
+        // Add parameters to the command
+        foreach (var param in parameters)
+        {
+            // Use AddWithValue to add parameters from the dictionary
+            command.Parameters.AddWithValue($"@{param.Key}", param.Value);
+        }
     }
 }

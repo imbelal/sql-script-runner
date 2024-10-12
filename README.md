@@ -86,12 +86,7 @@ The application also provides a user interface (UI) where all scripts or individ
    - **ScriptsContainer**: Name of the container where scripts are located.
    - **CsvContainerPrefix**: The CsvContainerPrefix is the prefix for the container where CSV files will be uploaded daily; for example, if set to 'evaluation,' a container with this prefix will be created each day, suffixed with the current date.
    - **TimerSchedule**: The TimerSchedule is set to "58 21 * * *", which is a cron expression used for automated scheduling; this value indicates that the task will be triggered every night at 9:58 PM.
-  
-### 📡 Usage
-The function can be triggered via an HTTP GET or POST request. The endpoint will execute all SQL scripts stored in the scripts container in Blob Storage and upload the results as CSV files back to the same container.
-```bash
-curl -X POST https://<your-function-app-name>.azurewebsites.net/api/execute-scripts
-```
+
 
 ### 🙌 Contributing
 Feel free to submit issues or pull requests if you would like to contribute. Please ensure that any code changes are well-tested and documented.

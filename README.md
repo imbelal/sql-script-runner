@@ -55,12 +55,29 @@ The application also provides a user interface (UI) where all scripts or individ
     npm install -g azure-functions-core-tools@4 --unsafe-perm true
     ```
 
-3. **Configure Connection Strings**:
+3. **Configure Environment Variables**:
 
-   - **Blob Storage**: Set up the connection string for Azure Blob Storage in the `local.settings.json` file.
-   - **SQL Database**: Configure the SQL connection string for executing scripts.
+   - Set environment variables in the `local.settings.json` file.
+  
+     ```
+         {
+          "IsEncrypted": false,
+          "Values": {
+            "AzureWebJobsStorage": "<Blob storage connection string>",
+            "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+            "SqlConnectionString": "<MSSQL database connection string>",
+            "PostgresConnectionString": "<PostgreSQL database connection string>",
+            "MySqlConnectionString": "<MySQL database connection string>",
+            "DatabaseType": "Postgres", // Example values SqlServer / Postgres / MySql
+            "ScriptsContainer": "scripts",
+            "CsvContainerPrefix": "evaluations",
+            "TimerSchedule": "58 21 * * *" // Every night at 9:58PM
+          }
+        }
+   
+     ```
 
-4. **Run the Function Locally**:
+5. **Run the Function Locally**:
 
    ```bash
    func start

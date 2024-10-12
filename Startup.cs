@@ -5,7 +5,9 @@ using SqlScriptRunner.Services.BlobStorage;
 using SqlScriptRunner.Services.DatabaseQueryExecutor;
 using SqlScriptRunner.Services.DatabaseQueryHandlerProvider;
 using SqlScriptRunner.Services.DatabaseQueryHandlers;
+using SqlScriptRunner.Services.Email;
 using SqlScriptRunner.Services.HtmlPageGenerator;
+using SqlScriptRunner.Services.ReportGenerator;
 using SqlScriptRunner.Services.ScriptExecutionDeterminer;
 
 [assembly: FunctionsStartup(typeof(SqlScriptRunner.Startup))]
@@ -22,6 +24,8 @@ namespace SqlScriptRunner
             builder.Services.AddSingleton<IScriptExecutionStrategy, WeeklyExecutionStrategy>();
             builder.Services.AddSingleton<IScriptExecutionStrategy, MonthlyExecutionStrategy>();
             builder.Services.AddSingleton<IScriptExecutionDeterminer, ScriptExecutionDeterminer>();
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+            builder.Services.AddTransient<IReportSender, ReportSender>();
 
             // For SQL Server
             builder.Services.AddTransient<IDatabaseQueryHandler, SqlServerQueryHandler>();

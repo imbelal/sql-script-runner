@@ -9,6 +9,7 @@ using SqlScriptRunner.ExceptionHandler;
 using SqlScriptRunner.Services.BlobStorage;
 using SqlScriptRunner.Services.DatabaseQueryExecutor;
 using SqlScriptRunner.Services.HtmlPageGenerator;
+using SqlScriptRunner.Services.ReportGenerator;
 using SqlScriptRunner.Services.ScriptExecutionDeterminer;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace SqlScriptRunner
         private readonly ISqlQueryExecutor _sqlQueryExecutor;
         private readonly IHtmlPageGenerator _htmlPageGenerator;
         private readonly IScriptExecutionDeterminer _scriptExecutionDeterminer;
+        private readonly IReportSender _reportSender;
         private readonly ILogger<SqlScriptExecutionFunction> _logger;
 
         private readonly string _scriptsContainer;
@@ -35,14 +37,16 @@ namespace SqlScriptRunner
         public SqlScriptExecutionFunction(
                 IBlobStorage blobStorage,
                 ISqlQueryExecutor sqlQueryExecutor,
-                IScriptExecutionDeterminer scriptExecutionDeterminer,
                 IHtmlPageGenerator htmlPageGenerator,
+                IScriptExecutionDeterminer scriptExecutionDeterminer,
+                IReportSender reportSender,
                 ILogger<SqlScriptExecutionFunction> logger)
         {
             _blobStorage = blobStorage;
             _sqlQueryExecutor = sqlQueryExecutor;
-            _scriptExecutionDeterminer = scriptExecutionDeterminer;
             _htmlPageGenerator = htmlPageGenerator;
+            _scriptExecutionDeterminer = scriptExecutionDeterminer;
+            _reportSender = reportSender;
             _logger = logger;
 
             // Load environment variables from configuration
@@ -58,8 +62,11 @@ namespace SqlScriptRunner
         [FunctionName("ExecuteAllScriptsTimer")]
         public async Task ExecuteAllScriptsTimer([TimerTrigger("%TimerSchedule%")] TimerInfo timerInfo) // Example: every night at 9: 27 PM.
         {
-            _logger.LogInformation($"Timer trigger executed at: {DateTime.Now}");
-            await ExecuteScriptsAsync();
+            await HandleFunctionExecutionAsync(async () =>
+            {
+                _logger.LogInformation($"Timer trigger executed at: {DateTime.Now}");
+                return new OkObjectResult(await ExecuteScriptsAsync());
+            });
         }
 
         /// <summary>
@@ -71,7 +78,7 @@ namespace SqlScriptRunner
         public async Task<IActionResult> ExecuteAllScript(
             [HttpTrigger(AuthorizationLevel.User, "get", "post", Route = "execute-scripts")] HttpRequest req)
         {
-            return await HandleFunctionExecutionAsync(req, async () =>
+            return await HandleFunctionExecutionAsync(async () =>
             {
                 _logger.LogInformation("Executing all scripts requested...");
 
@@ -93,7 +100,7 @@ namespace SqlScriptRunner
         public async Task<IActionResult> ExecuteScript(
             [HttpTrigger(AuthorizationLevel.User, "get", "post", Route = "execute-script/{filename}")] HttpRequest req, string fileName)
         {
-            return await HandleFunctionExecutionAsync(req, async () =>
+            return await HandleFunctionExecutionAsync(async () =>
             {
                 _logger.LogInformation($"Executing {fileName} requested...");
                 // Read the SQL script from Blob Storage
@@ -123,7 +130,7 @@ namespace SqlScriptRunner
         public async Task<IActionResult> GetScripts(
             [HttpTrigger(AuthorizationLevel.User, "get", Route = "scripts")] HttpRequest req)
         {
-            return await HandleFunctionExecutionAsync(req, async () =>
+            return await HandleFunctionExecutionAsync(async () =>
             {
                 _logger.LogInformation("Script list requested...");
                 // Read all SQL scripts from Blob Storage
@@ -154,7 +161,7 @@ namespace SqlScriptRunner
             string fileName,
             CancellationToken cancellationToken)
         {
-            return await HandleFunctionExecutionAsync(req, async () =>
+            return await HandleFunctionExecutionAsync(async () =>
             {
                 _logger.LogInformation($"Download request for blob: {fileName}");
                 // Download the blob content
@@ -173,15 +180,16 @@ namespace SqlScriptRunner
         /// Executes all SQL scripts stored in the Blob Storage and uploads their results.
         /// </summary>
         /// <returns>A string message indicating the number of scripts executed.</returns>
-        private async Task<string> ExecuteScriptsAsync()
+        private async Task<string> ExecuteScriptsAsync(CancellationToken cancellationToken = default)
         {
             // Read all SQL scripts from Blob Storage
-            var sqlScripts = await _blobStorage.ReadAllSqlScriptsAsync(_scriptsContainer);
+            var sqlScripts = await _blobStorage.ReadAllSqlScriptsAsync(_scriptsContainer, cancellationToken);
 
             // Read parameters from the JSON config file
-            var parameters = await ReadScriptParametersAsync();
+            var parameters = await ReadScriptParametersAsync(cancellationToken);
 
             int executedScriptsCount = 0;
+            Dictionary<string, bool> scriptsResult = new();
             // Execute each SQL script and upload results
             foreach (var script in sqlScripts)
             {
@@ -194,19 +202,22 @@ namespace SqlScriptRunner
                         var scriptParameters = parameters.TryGetValue(script.Key, out var param) ? param : new Dictionary<string, string>();
 
                         // Execute the query
-                        var results = await _sqlQueryExecutor.ExecuteSqlQueryAsync(script.Value, script.Key, scriptParameters);
+                        var results = await _sqlQueryExecutor.ExecuteSqlQueryAsync(script.Value, script.Key, scriptParameters, cancellationToken);
 
                         //Upload the results
-                        await _blobStorage.UploadScriptsResultsToBlobAsync(results, _csvContainerPrefix, script.Key);
+                        await _blobStorage.UploadScriptsResultsToBlobAsync(results, _csvContainerPrefix, script.Key, cancellationToken);
+                        scriptsResult.Add(script.Key, true);
                         executedScriptsCount++;
                     }
                 }
                 catch (Exception ex)
                 {
+                    scriptsResult.Add(script.Key, false);
                     _logger.LogError($"Execution failed for {script.Key}", ex);
                 }
             }
-
+            // Send report
+            await _reportSender.SendReportAsync(scriptsResult, cancellationToken);
             // Create response message and return.
             string responseMessage = $"{executedScriptsCount} scripts executed successfully and results have been uploaded!!";
             _logger.LogInformation(responseMessage);
@@ -216,12 +227,28 @@ namespace SqlScriptRunner
         /// <summary>
         /// Handles the execution of functions with a common exception handling mechanism.
         /// </summary>
-        /// <param name="req">The HTTP request.</param>
         /// <param name="action">The function logic to execute.</param>
         /// <returns>An IActionResult representing the result of the operation.</returns>
-        private async Task<IActionResult> HandleFunctionExecutionAsync(HttpRequest req, Func<Task<IActionResult>> action)
+        private async Task<IActionResult> HandleFunctionExecutionAsync(Func<Task<IActionResult>> action)
         {
-            return await FunctionExceptionHandler.ExecuteAsync(action, req.HttpContext, _logger);
+            return await FunctionExceptionHandler.ExecuteAsync(action, _logger);
+        }
+
+        /// <summary>
+        /// Asynchronously reads script parameters from a JSON file stored in Blob Storage and deserializes them into a dictionary.
+        /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to cancel the operation.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a dictionary where the key is a string representing a parameter category,
+        /// and the value is another dictionary containing parameter names as keys and their corresponding values as strings.</returns>
+        private async Task<Dictionary<string, Dictionary<string, string>>> ReadScriptParametersAsync(CancellationToken cancellationToken = default)
+        {
+            // Read the parameters JSON file from Blob Storage
+            BlobDownloadInfo parametersJson = await _blobStorage.DownloadSingleBlobAsync(_scriptsContainer, blobName: "script-parameters.json", cancellationToken);
+            using var reader = new StreamReader(parametersJson.Content);
+            var json = await reader.ReadToEndAsync(cancellationToken);
+
+            // Deserialize the JSON into a dictionary
+            return JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(json);
         }
 
         /// <summary>

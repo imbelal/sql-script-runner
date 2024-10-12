@@ -10,6 +10,7 @@
 - **⚙️ SQL Query Execution**: Executes SQL scripts on a target SQL database.
 - **🌐 Multi-Database Support**: Compatible with **MSSQL** ![MSSQL Icon](https://img.icons8.com/color/48/000000/microsoft-sql-server.png) , **PostgreSQL** ![PostgreSQL Icon](https://img.icons8.com/color/48/000000/postgreesql.png) , **MySQL** ![MySQL Icon](https://img.icons8.com/color/48/000000/mysql-logo.png) databases.
 - **📅 Script Execution Strategies**: Flexible strategies for executing scripts based on naming conventions (e.g., daily, weekly, monthly).
+- **⏰Automated Script Execution**:A timer scheduler triggers scripts execution daily at 9:27 PM, automating the process and ensuring timely execution without manual intervention.
 - **📤 Result Uploads**: Converts query results into **CSV** format and uploads them back to Blob Storage.
 - **🔗 HTTP Trigger**: Can be triggered via HTTP `GET` or `POST` requests.
 

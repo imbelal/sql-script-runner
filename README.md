@@ -6,20 +6,20 @@
 
 ## 🚀 Features
 
-- **🗃️ Blob Storage Integration**: Reads SQL scripts from a specified blob container.
-- **⚙️ SQL Query Execution**: Executes SQL scripts on a target SQL database.
-- **🌐 Multi-Database Support**: Compatible with **MSSQL** ![MSSQL Icon](https://img.icons8.com/color/48/000000/microsoft-sql-server.png) , **PostgreSQL** ![PostgreSQL Icon](https://img.icons8.com/color/48/000000/postgreesql.png) , **MySQL** ![MySQL Icon](https://img.icons8.com/color/48/000000/mysql-logo.png) databases.
-- **📅 Script Execution Strategies**: Flexible strategies for executing scripts based on naming conventions (e.g., daily, weekly, monthly).
-- **⏰Automated Script Execution**:A timer scheduler triggers scripts execution daily at 9:27 PM, automating the process and ensuring timely execution without manual intervention.
-- **📤 Result Uploads**: Converts query results into **CSV** format and uploads them back to Blob Storage.
-- **🔗 HTTP Trigger**: Can be triggered via HTTP `GET` or `POST` requests.
+- **Blob Storage Integration**: Reads SQL scripts from a specified blob container.
+- **SQL Query Execution**: Executes SQL scripts on a target SQL database with support for query parameters.
+- **Multi-Database Support**: Compatible with **MSSQL** ![MSSQL Icon](https://img.icons8.com/color/48/000000/microsoft-sql-server.png) , **PostgreSQL** ![PostgreSQL Icon](https://img.icons8.com/color/48/000000/postgreesql.png) , **MySQL** ![MySQL Icon](https://img.icons8.com/color/48/000000/mysql-logo.png) databases.
+- **Script Execution Strategies**: Flexible strategies for executing scripts based on naming conventions (e.g., daily, weekly, monthly).
+- **Automated Script Execution**:A timer scheduler triggers scripts execution daily at 9:27 PM, automating the process and ensuring timely execution without manual intervention.
+- **Result Uploads**: Converts query results into **CSV** format and uploads them back to Blob Storage.
+- **HTTP Trigger**: Can be triggered via HTTP `GET` or `POST` requests.
 
 ### 📜 Script Execution Strategies
 The application utilizes various script execution strategies to determine whether a script should be executed based on its filename. These strategies enhance flexibility and allow the system to easily adapt to different execution schedules.
 
-- **☀️ Daily Execution**: Scripts named with the suffix `script1_daily.sql` are executed daily.
-- **📅 Weekly Execution**: Scripts suffixed with `weekly_` followed by the day of the week (e.g., `script2_weekly_monday.sql`) are executed on the specified day.
-- **🗓️ Monthly Execution**: Scripts suffixed with `monthly_` followed by a day number (e.g., `script3_monthly_01.sql`) are executed on the specified day of each month.
+- **Daily Execution**: Scripts named with the suffix `script1_daily.sql` are executed daily.
+- **Weekly Execution**: Scripts suffixed with `weekly_` followed by the day of the week (e.g., `script2_weekly_monday.sql`) are executed on the specified day.
+- **Monthly Execution**: Scripts suffixed with `monthly_` followed by a day number (e.g., `script3_monthly_01.sql`) are executed on the specified day of each month.
 
 ## 💻 Simple UI
 The application also provides a user interface (UI) where all scripts or individual scripts can be executed, and the results can be downloaded in CSV format.
@@ -28,10 +28,10 @@ The application also provides a user interface (UI) where all scripts or individ
 
 ## 📋 Requirements
 
-- **🪙 Azure Account**: Required for setting up Function App and Blob Storage.
-- **🗃️ Blob Storage**: SQL scripts must be uploaded to a blob container (e.g., `scripts`).
-- **💾 SQL Database**: The function will execute the SQL scripts against a configured SQL database (MSSQL / PostgreSQL / MySQL).
-- **⚙️ Azure Functions Core Tools**: For local development and testing.
+- **Azure Account**: Required for setting up Function App and Blob Storage.
+- **Blob Storage**: SQL scripts must be uploaded to a blob container (e.g., `scripts`).
+- **SQL Database**: The function will execute the SQL scripts against a configured SQL database (MSSQL / PostgreSQL / MySQL).
+- **Azure Functions Core Tools**: For local development and testing.
 
 ## 🚦 Getting Started
 

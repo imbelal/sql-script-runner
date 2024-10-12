@@ -46,7 +46,7 @@ namespace SqlScriptRunner
         /// <param name="timer">Timer trigger info.</param>
         /// <returns>A Task that represents the asynchronous operation.</returns>
         [FunctionName("ExecuteAllScriptsTimer")]
-        public async Task ExecuteAllScriptsTimer([TimerTrigger("27 21 * * *")] TimerInfo timerInfo) // Example: every day at 1:10 AM.
+        public async Task ExecuteAllScriptsTimer([TimerTrigger("27 21 * * *")] TimerInfo timerInfo) // Example: every night at 9: 27 PM.
         {
             _logger.LogInformation($"Timer trigger executed at: {DateTime.Now}");
             await ExecuteScriptsAsync();

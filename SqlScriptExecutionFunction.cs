@@ -20,6 +20,9 @@ namespace SqlScriptRunner
 {
     public class SqlScriptExecutionFunction
     {
+        private const string ScriptsContainer = "scripts";
+        private const string CsvContainerPrefix = "evaluations";
+
         private readonly IBlobStorage _blobStorage;
         private readonly ISqlQueryExecutor _sqlQueryExecutor;
         private readonly IHtmlPageGenerator _htmlPageGenerator;

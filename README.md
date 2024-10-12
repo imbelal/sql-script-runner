@@ -71,7 +71,12 @@ The application also provides a user interface (UI) where all scripts or individ
             "DatabaseType": "Postgres", // Example values SqlServer / Postgres / MySql
             "ScriptsContainer": "scripts",
             "CsvContainerPrefix": "evaluations",
-            "TimerSchedule": "58 21 * * *" // Every night at 9:58PM
+            "TimerSchedule": "58 21 * * *", // Every night at 9:58PM
+            "SMTP_SERVER": "smtp.server.address",
+            "SMTP_PORT": "smtp port",
+            "SMTP_USERNAME": "username",
+            "SMTP_PASSWORD": "password",
+            "TO_EMAIL": "toemail@mail.com"
           }
         }
    

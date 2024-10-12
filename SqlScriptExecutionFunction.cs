@@ -250,6 +250,23 @@ namespace SqlScriptRunner
             // Deserialize the JSON into a dictionary
             return JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(json);
         }
+
+        /// <summary>
+        /// Asynchronously reads script parameters from a JSON file stored in Blob Storage and deserializes them into a dictionary.
+        /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to cancel the operation.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a dictionary where the key is a string representing a parameter category,
+        /// and the value is another dictionary containing parameter names as keys and their corresponding values as strings.</returns>
+        private async Task<Dictionary<string, Dictionary<string, string>>> ReadScriptParametersAsync(CancellationToken cancellationToken = default)
+        {
+            // Read the parameters JSON file from Blob Storage
+            BlobDownloadInfo parametersJson = await _blobStorage.DownloadSingleBlobAsync(_scriptsContainer, blobName: "script-parameters.json", cancellationToken);
+            using var reader = new StreamReader(parametersJson.Content);
+            var json = await reader.ReadToEndAsync(cancellationToken);
+
+            // Deserialize the JSON into a dictionary
+            return JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(json);
+        }
         #endregion
     }
 }

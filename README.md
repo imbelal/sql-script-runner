@@ -13,6 +13,7 @@
 - **Automated Script Execution**:A timer scheduler triggers scripts execution daily at 9:27 PM, automating the process and ensuring timely execution without manual intervention.
 - **Result Uploads**: Converts query results into **CSV** format and uploads them back to Blob Storage.
 - **HTTP Trigger**: Can be triggered via HTTP `GET` or `POST` requests.
+- **Email Reporting**: Sends email notifications after scripts executions, indicating success or failure for each script.
 
 ### 📜 Script Execution Strategies
 The application utilizes various script execution strategies to determine whether a script should be executed based on its filename. These strategies enhance flexibility and allow the system to easily adapt to different execution schedules.

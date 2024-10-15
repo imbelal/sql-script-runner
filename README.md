@@ -2,7 +2,7 @@
 
 ## 🌟 Overview
 
-**`SqlScriptRunner`** is a powerful Function App designed to execute SQL scripts stored in **Azure Blob Storage** against a target SQL database. It also uploads the results back to Blob Storage, providing a seamless workflow for database management. The function is triggered via HTTP requests and can handle multiple scripts in a single run. It supports integration with multiple databases, including **MSSQL**, **PostgreSQL**, and **MySQL**.
+**`SqlScriptRunner`** is a powerful Function App designed to execute SQL scripts stored in **Blob Storage** against a target SQL database. It also uploads the results back to Blob Storage, providing a seamless workflow for database management. The function is triggered via HTTP requests and can handle multiple scripts in a single run. It supports integration with multiple databases, including **MSSQL**, **PostgreSQL**, and **MySQL**.
 
 ## 🚀 Features
 

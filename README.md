@@ -38,7 +38,7 @@ The application also provides a user interface (UI) where all scripts or individ
 
 ### ✅ Prerequisites
 
-1. **.NET Core SDK** (v6.0 or later)
+1. **.NET Core SDK** (v8.0 or later)
 2. **Azure Functions Core Tools**
 3. **Azure Storage Account** with a blob container for SQL scripts.
 4. **SQL Database** to execute the queries.

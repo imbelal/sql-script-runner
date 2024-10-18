@@ -1,4 +1,4 @@
-# 🛠️ SqlScriptRunner Function App
+## 🛠️ SqlScriptRunner Function App - A Powerful Tool for Automated SQL Script Execution
 
 ## 🌟 Overview
 
